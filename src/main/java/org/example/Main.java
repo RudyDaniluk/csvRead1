@@ -25,18 +25,18 @@ public class Main {
                 if (currentLine >= startLine && currentLine <= endLine) {
                     String[] values = line.split("\t");
 
-                    // Usuń tekst w nawiasach
+                    
                     String nameWithoutBrackets = values[0].replaceAll("\\s*\\([^)]*\\)", "").trim();
 
-                    // Rozdziel imię i nazwisko
+                   
                     String[] nameParts = nameWithoutBrackets.split(" ", 2);
                     String firstName = nameParts.length > 0 ? nameParts[0] : "Brak";
                     String lastName = nameParts.length > 1 ? nameParts[1] : "Brak";
 
-                    // Pobierz wartość czasu udziału w spotkaniu
+                 
                     String participationTime = values.length > 3 ? values[3] : "Brak";
 
-                    // Sprawdź, czy czas udziału w spotkaniu przekracza godzinę
+                   
                     boolean issuedCertificate = false;
                     if (participationTime.contains("godz.")) {
                         int hours = Integer.parseInt(participationTime.split(" ")[0]);
@@ -45,7 +45,7 @@ public class Main {
                         }
                     }
 
-                    // Dodaj dane do tablicy
+                  
                     String certificateStatus = issuedCertificate ? "Tak" : "Nie";
                     data[arrayIndex++] = new String[]{lastName, firstName, participationTime, certificateStatus};
                 }
@@ -54,33 +54,29 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Dodaj nagłówek jako pierwszy wiersz
+        
         String[][] fullData = new String[data.length + 1][];
         fullData[0] = header;
         System.arraycopy(data, 0, fullData, 1, data.length);
 
-        // Sortuj dane według nazwiska (pierwsza kolumna)
+      
         Arrays.sort(fullData, 1, fullData.length, Comparator.comparing(row -> row[0]));
 
-        // Sprawdź dane przed usunięciem ostatniego rekordu
         System.out.println("Dane przed usunięciem ostatniego rekordu:");
         for (String[] row : fullData) {
             System.out.println(Arrays.toString(row));
         }
 
-        // Usuń ostatni wiersz (jeśli nie jest pusty)
         if (fullData.length > 1) {
             String[][] trimmedData = Arrays.copyOf(fullData, fullData.length - 1);
             fullData = trimmedData;
         }
 
-        // Sprawdź dane po usunięciu ostatniego rekordu
         System.out.println("Dane po usunięciu ostatniego rekordu:");
         for (String[] row : fullData) {
             System.out.println(Arrays.toString(row));
         }
 
-        // Zapisz posortowane dane do pliku CSV
         try (FileWriter writer = new FileWriter(outputCsvFile)) {
             for (String[] row : fullData) {
                 writer.write(String.join(",", row) + "\n");
